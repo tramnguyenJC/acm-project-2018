@@ -5,6 +5,7 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from werkzeug.urls import url_parse
 
+
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -62,6 +63,7 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 # username is dynamically determined. In url_for calls, also
 # needs to set the username argument.
