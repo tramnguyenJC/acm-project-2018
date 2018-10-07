@@ -5,11 +5,16 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from werkzeug.urls import url_parse
 
+site_name = "URConnect"
 
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
+    return render_template('index.html', title='Home')
+
+@app.route('/chat')
+@login_required
+def chat():
     posts = [
         {
             'author': {'username': 'John'},
@@ -20,7 +25,7 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html', title='Home', posts=posts)
+    return render_template('chat.html', title='Home', posts=posts)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -39,7 +44,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('chat')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
@@ -61,7 +66,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
+        return redirect(url_for('chat'))
     return render_template('register.html', title='Register', form=form)
 
 
@@ -78,4 +83,20 @@ def user(username):
     ]
     return render_template('user.html', user=user, posts=posts)
 
+# Very basic links to look at and clear databases
+@app.route('/showdb')
+def showdb():
+    out = ""
+    for u in User.query.all():
+        out += str(u.id) +" -- "+ u.username +" -- "+ u.email +"<br/>"
 
+    return out
+
+@app.route('/cleardb')
+def cleardb():
+    for u in User.query.all():
+        db.session.delete(u)
+
+    db.session.commit()         # commits changes; to be used if editing database
+
+    return "database cleared"
