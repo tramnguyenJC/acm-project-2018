@@ -1,11 +1,10 @@
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, PostForm
+from app.models import User, Post
 from werkzeug.urls import url_parse
 
-site_name = "URConnect"
 
 @app.route('/')
 @app.route('/index')
@@ -77,11 +76,29 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
+    posts = user.posts.order_by(Post.timestamp.desc()).all()
     return render_template('user.html', user=user, posts=posts)
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@login_required
+def index():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is now live!')
+        return redirect(url_for('index'))
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template("index.html", title='Home Page', form=form,
+                           posts=posts)
+
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title='Explore', posts=posts)
 
 # Very basic links to look at and clear databases
 @app.route('/showdb')
@@ -98,5 +115,4 @@ def cleardb():
         db.session.delete(u)
 
     db.session.commit()         # commits changes; to be used if editing database
-
     return "database cleared"
