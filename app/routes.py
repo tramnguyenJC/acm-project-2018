@@ -5,6 +5,12 @@ from app.forms import LoginForm, RegistrationForm, PostForm
 from app.models import User, Post
 from werkzeug.urls import url_parse
 
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('index.html', title='Home')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -58,21 +64,19 @@ def user(username):
     return render_template('user.html', user=user, posts=posts)
 
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/chat', methods=['GET', 'POST'])
 @login_required
-def index():
+def chat():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(body=form.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Your post is now live!')
-        return redirect(url_for('index'))
+        return redirect(url_for('chat'))
     posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template("index.html", title='Home Page', form=form,
+    return render_template("chat.html", title='Home Page', form=form,
                            posts=posts)
-
 
 
 @app.route('/explore')
@@ -82,3 +86,20 @@ def explore():
     return render_template('index.html', title='Explore', posts=posts)
 
 
+# Very basic links to look at and clear databases
+@app.route('/showdb')
+def showdb():
+    out = ""
+    for u in User.query.all():
+        out += str(u.id) +" -- "+ u.username +" -- "+ u.email +"<br/>"
+
+    return out
+
+@app.route('/cleardb')
+def cleardb():
+    for u in User.query.all():
+        db.session.delete(u)
+
+    db.session.commit()         # commits changes; to be used if editing database
+
+    return "database cleared"

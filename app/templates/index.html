@@ -2,12 +2,9 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-	<h1>Hi, {{ current_user.username }}!</h1>
-	{% if form %}
-    {{ wtf.quick_form(form) }}
-    <br>
-    {% endif %}
-	{% for post in posts %}
-		{% include '_post.html' %}
-	{% endfor %}
+	{% if title != "Home"%}
+    <h1>Welcome to UR Connect: {{ title }}!</h1>
+  {% else %}
+    <h1>Welcome to UR Connect!</h1>
+  {% endif %}
 {% endblock %}
