@@ -4,6 +4,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, PostForm
 from app.models import User, Post
 from werkzeug.urls import url_parse
+from app.email import send_request_email
 
 @app.route('/')
 @app.route('/index')
@@ -103,3 +104,23 @@ def cleardb():
     db.session.commit()         # commits changes; to be used if editing database
 
     return "database cleared"
+
+# This is just playing around
+@app.route('/request_display')
+@login_required
+def request_display():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('requestDisplay.html', title="Display Requests", posts=posts)
+
+@app.route('/email_notification/<user>', methods=['GET', 'POST'])
+def email_notification(user):
+    if current_user.is_authenticated == False:
+        return redirect(url_for('login'))
+    user = User.query.filter_by(username=user).first()
+    email = user.email
+    if email:
+        send_request_email(email)
+        flash('Request Sent!')
+        return redirect(url_for('index'))
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('requestDisplay.html', title="Display Requests", posts=posts)

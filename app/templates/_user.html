@@ -1,0 +1,13 @@
+<table class="table table-hover">
+    <tr>
+        <td>
+            {{ post.author.username }}
+            says:
+            {{ post.body }}
+            <a href="{{ url_for('email_notification', user=post.author.username, _external=True) }}"
+               type="button" class="btn btn-primary">
+                Connect
+            </a>
+        </td>
+    </tr>
+</table>
