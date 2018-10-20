@@ -33,6 +33,16 @@ class Post(db.Model):
 	def __repr__(self):
 		return '<Post {}>'.format(self.origin, self.destination ,self.date)
 
+class Request(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	origin = db.Column(db.String(140))
+	destination = db.Column(db.String(140))
+	date = db.Column(db.Date, index = True)
+	time = db.Column(db.Time, index = True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	def __repr__(self):
+		return '<Request {}>'.format(self.destination)
+
 
 @login.user_loader
 def load_user(id):
