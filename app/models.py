@@ -29,6 +29,7 @@ class Post(db.Model):
 	destination = db.Column(db.String(140))
 	date = db.Column(db.Date, index = True)
 	time = db.Column(db.Time, index = True)
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	def __repr__(self):
 		return '<Post {}>'.format(self.origin, self.destination ,self.date)
