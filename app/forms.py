@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DateField
-# from wtforms_components import TimeField
+from wtforms_components import TimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User
 
@@ -36,12 +36,16 @@ class PostForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class RequestForm(FlaskForm):
-    origin = StringField('Where are you travelling from?',
-                            validators=[DataRequired()])
-    destination = StringField('Where are you travelling to?',
-                            validators=[DataRequired()])
-    date = DateField('What date are you travelling?',
+    origin = StringField('Where are you traveling from?',
+                            validators=[DataRequired()],
+                            render_kw={"placeholder": "University of Richmond"})
+    destination = StringField('Where are you traveling to?',
+                            validators=[DataRequired()],
+                            render_kw={"placeholder": "RIC Airport"})
+    date = DateField('What date are you traveling?',
+                            validators = [DataRequired()],
+                            render_kw={"placeholder": "MM/DD/YY"},
+                            format="%m/%d/%y")
+    time = TimeField('When are you traveling? (Please give a tentative time)',
                             validators = [DataRequired()])
-    # time = TimeField('When are you travelling??(Please give a tentative time)',
-    #                         validators = [DataRequired()])
     submit = SubmitField('Submit')

@@ -9,7 +9,8 @@ from app.email import send_request_email
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Home')
+    requests = Request.query.all()
+    return render_template('index.html', title='Home', requests = requests)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,13 +80,6 @@ def chat():
     return render_template("chat.html", title='Home Page', form=form,
                            posts=posts)
 
-@app.route('/explore')
-@login_required
-def explore():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Explore', posts=posts)
-
-
 # Very basic links to look at and clear databases
 @app.route('/showdb')
 def showdb():
@@ -104,7 +98,7 @@ def cleardb():
 
     return "database cleared"
 
-@app.route('/requestForm')
+@app.route('/requestForm', methods=['GET', 'POST'])
 @login_required
 def requestForm():
     form = RequestForm()
@@ -113,21 +107,14 @@ def requestForm():
                           destination = form.destination.data,
                           date = form.date.data,
                           time = form.time.data,
-                          author=current_user)
+                          author = current_user)
         db.session.add(request)
         db.session.commit()
-        flash('Your request has been posted')
+        flash('Your request has been posted!')
         return redirect(url_for('index'))
     return render_template('requestForm.html', title='Request', form=form)
 
-
-# This is just playing around
-@app.route('/request_display')
-@login_required
-def request_display():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('requestDisplay.html', title="Display Requests", posts=posts)
-
+# sending email notification to user
 @app.route('/email_notification/<user>', methods=['GET', 'POST'])
 def email_notification(user):
     if current_user.is_authenticated == False:
@@ -138,5 +125,5 @@ def email_notification(user):
         send_request_email(email)
         flash('Request Sent!')
         return redirect(url_for('index'))
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('requestDisplay.html', title="Display Requests", posts=posts)
+    requests = Request.query.all()
+    return render_template('index.html', title='Home', requests = requests)

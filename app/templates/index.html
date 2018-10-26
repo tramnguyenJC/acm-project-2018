@@ -2,9 +2,14 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-	{% if title != "Home"%}
+  {% if title != "Home"%}
     <h1>Welcome to UR Connect: {{ title }}!</h1>
   {% else %}
     <h1>Welcome to UR Connect!</h1>
   {% endif %}
+  {% for request in requests %}
+		{% include '_request.html' %}
+  {% endfor %}
+  <a href="{{ url_for('requestForm') }}"" class="btn btn-primary active"> Make new request
+  </a>
 {% endblock %}
