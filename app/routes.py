@@ -113,7 +113,8 @@ def request_form():
                           destination = form.destination.data,
                           date = form.date.data,
                           time = form.time.data,
-                          author = current_user)
+                          author = current_user,
+                          description = form.description.data)
         db.session.add(request)
         db.session.commit()
         flash('Your request has been posted!')

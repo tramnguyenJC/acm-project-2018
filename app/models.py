@@ -42,6 +42,7 @@ class Request(db.Model):
 	date = db.Column(db.Date, index = True)
 	time = db.Column(db.Time, index = True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	description = db.Column(db.String(140))
 	def __repr__(self):
 		return '<Request {}>'.format(self.destination)
 

@@ -52,5 +52,7 @@ class RequestForm(FlaskForm):
                             format="%m/%d/%y")
     time = TimeField('When are you traveling? (Please give a tentative time)', 
                             validators = [DataRequired()])
+    description = TextAreaField('Optional Description')
     submit = SubmitField('Submit')
+
 
