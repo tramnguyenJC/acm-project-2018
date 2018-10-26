@@ -8,7 +8,8 @@ from werkzeug.urls import url_parse
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Home')
+    requests = Request.query.all()
+    return render_template('index.html', title='Home', requests = requests)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -78,14 +79,6 @@ def chat():
     return render_template("chat.html", title='Home Page', form=form,
                            posts=posts)
 
-
-@app.route('/explore')
-@login_required
-def explore():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Explore', posts=posts)
-
-
 # Very basic links to look at and clear databases
 @app.route('/showdb')
 def showdb():
@@ -104,7 +97,7 @@ def cleardb():
 
     return "database cleared"
 
-@app.route('/requestForm')
+@app.route('/requestForm', methods=['GET', 'POST'])
 @login_required
 def requestForm():
     form = RequestForm()
@@ -113,10 +106,10 @@ def requestForm():
                           destination = form.destination.data,
                           date = form.date.data,
                           time = form.time.data,
-                          author=current_user)
+                          author = current_user)
         db.session.add(request)
         db.session.commit()
-        flash('Your request has been posted')
+        flash('Your request has been posted!')
         return redirect(url_for('index'))
     return render_template('requestForm.html', title='Request', form=form)
 
