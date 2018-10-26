@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, PostForm
-from app.models import User, Post
+from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm
+from app.models import User, Post, Request
 from werkzeug.urls import url_parse
 from app.email import send_request_email
 
@@ -79,7 +79,6 @@ def chat():
     return render_template("chat.html", title='Home Page', form=form,
                            posts=posts)
 
-
 @app.route('/explore')
 @login_required
 def explore():
@@ -104,6 +103,23 @@ def cleardb():
     db.session.commit()         # commits changes; to be used if editing database
 
     return "database cleared"
+
+@app.route('/requestForm')
+@login_required
+def requestForm():
+    form = RequestForm()
+    if form.validate_on_submit():
+        request = Request(origin = form.origin.data,
+                          destination = form.destination.data,
+                          date = form.date.data,
+                          time = form.time.data,
+                          author=current_user)
+        db.session.add(request)
+        db.session.commit()
+        flash('Your request has been posted')
+        return redirect(url_for('index'))
+    return render_template('requestForm.html', title='Request', form=form)
+
 
 # This is just playing around
 @app.route('/request_display')
