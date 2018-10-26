@@ -10,6 +10,6 @@
   {% for request in requests %}
 		{% include '_request.html' %}
   {% endfor %}
-  <a href="{{ url_for('requestForm') }}"" class="btn btn-primary active"> Make new request
+  <a href="{{ url_for('request_form') }}"" class="btn btn-primary active"> Make new request
   </a>
 {% endblock %}

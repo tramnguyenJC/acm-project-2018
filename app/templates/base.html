@@ -1,5 +1,10 @@
 {% extends 'bootstrap/base.html' %}
 
+{% block head %}
+{{super()}}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
+
 {% block title %}
     {% if title %} {{ title }} - URConnect {% else %} Welcome to URConnect {% endif %}
 {% endblock %}
@@ -20,7 +25,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     <li><a href="{{ url_for('chat') }}">Chat</a></li>
-                    <li><a href="{{ url_for('requestForm') }}">Request</a></li>
+                    <li><a href="{{ url_for('request_form') }}">Request</a></li>
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

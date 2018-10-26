@@ -26,17 +26,18 @@ class User(UserMixin, db.Model):
 
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	origin = db.Column(db.String(140))
-	destination = db.Column(db.String(140))
-	date = db.Column(db.Date, index = True)
+	body = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	def __repr__(self):
-		return '<Post {}>'.format(self.origin, self.destination ,self.date)
+		return '<Post {}>'.format(self.body)
+
 
 class Request(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
+	origin_city = db.Column(db.String(140))
 	origin = db.Column(db.String(140))
+	destination_city = db.Column(db.String(140))
 	destination = db.Column(db.String(140))
 	date = db.Column(db.Date, index = True)
 	time = db.Column(db.Time, index = True)

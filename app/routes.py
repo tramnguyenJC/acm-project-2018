@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm
@@ -97,12 +97,19 @@ def cleardb():
 
     return "database cleared"
 
-@app.route('/requestForm', methods=['GET', 'POST'])
+@app.route('/request_form', methods=['GET', 'POST'])
 @login_required
-def requestForm():
+def request_form():
     form = RequestForm()
+    form.origin_city.choices = app.config['CITIES']
+    form.origin.choices = app.config['LOCATIONS']
+    form.destination_city.choices = app.config['CITIES']
+    form.destination.choices = app.config['LOCATIONS']
+ 
     if form.validate_on_submit():
-        request = Request(origin = form.origin.data, 
+        request = Request(origin_city = form.origin_city.data,
+                          origin = form.origin.data, 
+                          destination_city = form.destination_city.data,
                           destination = form.destination.data,
                           date = form.date.data,
                           time = form.time.data,
@@ -113,3 +120,21 @@ def requestForm():
         return redirect(url_for('index'))
     return render_template('requestForm.html', title='Request', form=form)
 
+
+@app.route('/get_origin_locations')
+def _get_origin_locations():
+    # Get available locations to display in SelectField after User 
+    # has selected the city SelectField.
+    # For JavaScript request.
+    city = request.args.get('origin_city', "Richmond", type=str)
+    locations = app.config['LOCATIONS_BY_CITY'].get(city)
+    return jsonify(locations)
+
+@app.route('/get_destination_locations')
+def _get_destination_locations():
+    # Get available locations to display in SelectField after User 
+    # has selected the city SelectField.
+    # For JavaScript request.
+    city = request.args.get('destination_city', "Washington D.C.", type=str)
+    locations = app.config['LOCATIONS_BY_CITY'].get(city)
+    return jsonify(locations)

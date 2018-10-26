@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DateField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DateField, SelectField
 from wtforms_components import TimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
-from app.models import User
+from app.models import User, Request
+from app import app
 
 
 class LoginForm(FlaskForm):
@@ -36,12 +37,15 @@ class PostForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class RequestForm(FlaskForm):
-    origin = StringField('Where are you traveling from?', 
-                            validators=[DataRequired()],
-                            render_kw={"placeholder": "University of Richmond"})
-    destination = StringField('Where are you traveling to?', 
-                            validators=[DataRequired()],
-                            render_kw={"placeholder": "RIC Airport"})
+    origin_city = SelectField(u'Which city are you traveling from?',
+        validators=[DataRequired()], id='select_origin_city')
+    origin = SelectField(u'Which location you traveling from?',
+        validators=[DataRequired()], id='select_origin')
+    destination_city = SelectField(u'Which city are you traveling to?',
+        validators=[DataRequired()], id='select_destination_city')
+    destination = SelectField(u'Which location are you traveling to?',
+        validators=[DataRequired()], id='select_destination')
+
     date = DateField('What date are you traveling?',
                             validators = [DataRequired()],
                             render_kw={"placeholder": "MM/DD/YY"},
