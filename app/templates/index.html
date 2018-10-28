@@ -2,14 +2,56 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-  {% if title != "Home"%}
-    <h1>Welcome to UR Connect: {{ title }}!</h1>
+
+<main id="home">
+  <div id="landing-banner">
+	  <img src="{{ url_for('static', filename='imgs/cover.jpg')}}">
+  </div>
+  {% if requests %}
+	  <div id="landing-text" class="user">
+
+		<h1>Welcome to UR Connect, {{ user.username.capitalize() }}!</h1>
+		<!--{% for request in requests %}
+			  {% include '_request.html' %}
+		{% endfor %}-->
+		<div id="search-container">
+			<h2>Search</h2>
+			<div class="row">
+			 	<div class="col-md-12">
+				  	{{ wtf.quick_form(form) }}
+			  	</div>
+			</div>
+			<hr/>
+			<a id="request-btn" class="btn btn-primary active" href="{{ url_for('request_form') }}">
+				Make new request
+			</a>
+		</div>
+
+
   {% else %}
-    <h1>Welcome to UR Connect!</h1>
-  {% endif %}
-  {% for request in requests %}
-		{% include '_request.html' %}
-  {% endfor %}
-  <a href="{{ url_for('requestForm') }}"" class="btn btn-primary active"> Make new request
-  </a>
+	  <div id="landing-text" class="anon">
+
+		<h1>Welcome to UR Connect!</h1>
+		<p>
+			Use this port to find travel companions to ride with to the airport
+			and other travel terminals.</p><p>See who else is going to the airport
+			at the same time and plan a group ride to save on Uber / Lyft costs.
+		</p>
+		<a id="register-btn" class="btn btn-success active" href="{{ url_for('register') }}">
+			Sign Up</a>
+		<a id="login-btn"    class="btn btn-warning active" href="{{ url_for('login') }}">
+		 	Log In</a>
+	  {% endif %}
+  </div>
+</main>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+ 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript">
+	$(function () {
+	  $('#datepicker').datetimepicker({ format: 'MM/DD/YY' });
+	});
+	</script>
 {% endblock %}

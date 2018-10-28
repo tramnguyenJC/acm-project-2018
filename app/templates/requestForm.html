@@ -10,3 +10,73 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+  {{super()}}
+  <script charset="utf-8" type="text/javascript">
+	$(function() {
+		console.log("In function");
+
+	    var dropdown = {
+	    	origin_city: $('#select_origin_city'),
+	    	origin: $('#select_origin'),
+	    	destination_city: $('#select_destination_city'),
+	    	destination: $('#select_destination')
+	    };
+
+	    // call to update on load
+	    updateOriginLocations();
+	    updateDestinationLocations();
+
+	    // function to call XHR and update location dropdown
+	    function updateOriginLocations() {
+	    	var send = {
+	    		origin_city: dropdown.origin_city.val()
+	    	};
+	    	dropdown.origin.attr('disabled', 'disabled');
+	    	dropdown.origin.empty();
+	    	$.getJSON("{{ url_for('_get_origin_locations') }}", send, function(data) {
+	    		data.forEach(function(item) {
+	    			dropdown.origin.append(
+	    				$('<option>', {
+	    					value: item[0],
+	    					text: item[1]
+	    				})
+	    				);
+	    		});
+	    		dropdown.origin.removeAttr('disabled');
+	    	});
+	    }
+
+	    function updateDestinationLocations() {
+	    	var send = {
+	    		origin_city: dropdown.destination_city.val()
+	    	};
+	    	dropdown.destination.attr('disabled', 'disabled');
+	    	dropdown.destination.empty();
+	    	$.getJSON("{{ url_for('_get_origin_locations') }}", send, function(data) {
+	    		data.forEach(function(item) {
+	    			dropdown.destination.append(
+	    				$('<option>', {
+	    					value: item[0],
+	    					text: item[1]
+	    				})
+	    			);
+	    		});
+	    		dropdown.destination.removeAttr('disabled');
+	    	});
+	    }
+
+	    // event listener to state dropdown change
+	    dropdown.origin_city.on('change', function() {
+	    	updateOriginLocations();
+	    });
+
+	    dropdown.destination_city.on('change', function() {
+	    	updateDestinationLocations();
+	    });
+
+	});
+
+</script>
+{% endblock %}

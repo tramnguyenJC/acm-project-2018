@@ -1,11 +1,23 @@
 {% extends 'bootstrap/base.html' %}
 
+{% block head %}
+{{super()}}
+<!--Bootstrap + Query Implementation -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+{% endblock %}
+
 {% block title %}
     {% if title %} {{ title }} - URConnect {% else %} Welcome to URConnect {% endif %}
 {% endblock %}
 
 {% block navbar %}
-    <nav class="navbar navbar-default">
+    <nav id="top-nav" class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -14,13 +26,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('index') }}"> URConnect </a>
+                <a class="navbar-brand" href="{{ url_for('index') }}">URConnect</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     <li><a href="{{ url_for('chat') }}">Chat</a></li>
-                    <li><a href="{{ url_for('requestForm') }}">Request</a></li>
+                    <li><a href="{{ url_for('request_form') }}">Request</a></li>
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -48,9 +60,10 @@
 
         {# application content needs to be provided in the app_content block #}
         {% block app_content %}{% endblock %}
-
-        {%- block footer %}
-        <footer>&copy; 2018 ACM University of Richmond </footer>
-        {%- endblock footer %}
     </div>
+
+    {%- block footer %}
+    <footer>&copy; 2018 ACM University of Richmond </footer>
+    {%- endblock footer %}
+
 {% endblock %}

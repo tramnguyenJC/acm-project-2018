@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Search Results</h1>
+    {% if results %}
+        {% for result in results %}
+          {% include '_result.html' %}
+       {% endfor %}
+    {% else %}
+        <h4>
+            There are no entries for this day yet. Consider
+            <a href="{{ url_for('request_form') }}">posting your own for others to see</a>
+        <h4>
+    {% endif %}
+{% endblock %}

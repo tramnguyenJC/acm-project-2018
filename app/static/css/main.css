@@ -1,0 +1,135 @@
+#top-nav {
+    height: 8vh;
+    min-height: 60px;
+    font-size: 1.3em;
+    padding: 6px;
+}
+
+
+
+body {
+    overflow-x: hidden;
+    background-color: white;
+}
+
+body > .container {
+    min-height: 72vh;
+    z-index: 1;
+}
+
+#home #landing-banner {
+    position: relative;
+    height: 86vh;
+    min-height: 575px;
+    width: 126%;
+    margin-left: -13%;
+    margin-top: -20px;
+    z-index: -1;
+    margin-bottom: -10vh
+}
+
+#home #landing-banner img {
+    object-fit: cover;
+    position: relative;
+    height: 88vh;
+    min-height: 600px;
+    width: 112%;
+    margin-left: -6%;
+    margin-top: -20px;
+    z-index: -1;
+    margin-bottom: -60px;
+    user-select: none;
+}
+
+#home #landing-text {
+    position: absolute;
+    margin-left: -20px;
+    padding: 0px 40px 20px 40px;
+    background: rgba(255, 255, 255, 0.7);
+    line-height: 2.2em;
+} #home #landing-text.anon {
+    top: 25vh;
+    max-width: 45%;
+} #home #landing-text.user {
+    top: 20vh;
+    max-width: 60%;
+}
+
+#home #landing-text.anon {
+    text-align: center;
+}
+
+#home #landing-text h1 {
+    font-size: 3em;
+    padding: 20px 0;
+    color: #555;
+}
+
+#home #landing-text p {
+    font-size: 1.5em;
+}
+
+#home #landing-text.user .btn {
+    margin: 10px 0;
+    font-size: 1.6em;
+}
+
+#home #landing-text.anon .btn {
+    margin: 20px;
+    font-size: 1.8em;
+    width: 150px;
+    padding: 10px;
+}
+
+/* Search Styles */
+#home #landing-text #search-container { margin-left: 20px; }
+#home #landing-text #search-container form {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px;
+}
+#home #landing-text .form-group {
+    display: inline;
+    margin-left: 10px;
+}
+#home #landing-text .control-label {
+    font-size: 1.3em;   font-weight: normal;
+    width: 15%;         min-width: 115px;
+} #home #landing-text label[for=destination].control-label {
+    width: auto;        min-width: 0;
+} #home #landing-text label[for=date].control-label {
+    display: inline;
+    min-width: 120px;
+    padding-right: 1.5%;
+}
+
+#home #landing-text select.form-control {
+    width: min-content;     max-width: 34%  !important;
+    display: inline-block;
+    margin: 15px 0;
+    font-size: 1.2em;
+}
+#home #landing-text input.form-control {
+    display: inline-block;
+    width: 30% !important;
+    font-size: 1.2em;
+}
+#home #landing-text form .btn#search {
+    display: block;
+    margin: 20px 10px;
+}
+
+footer {
+    width: 100%;
+    min-height: 60px;
+    height: 10vh;
+    left: 0;
+    bottom: 0;
+    background-color: rgb(70, 70, 70);
+    color: white;
+    margin-top: 60px;
+    padding: 20px 40px 40px 40px;
+    font-size: 1.2em;
+    border-top: 2px solid grey;
+
+    min-height: 50px;
+}
