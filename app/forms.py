@@ -4,7 +4,7 @@ from wtforms_components import TimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User, Request
 from app import app
-
+from flask_bootstrap import Bootstrap
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -50,20 +50,19 @@ class RequestForm(FlaskForm):
                             validators = [DataRequired()],
                             render_kw={"placeholder": "MM/DD/YY"},
                             format="%m/%d/%y")
-    time = TimeField('When are you traveling? (Please give a tentative time)', 
+    time = TimeField('When are you traveling? (Please give a tentative time)',
                             validators = [DataRequired()])
     description = TextAreaField('Optional Description')
     submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
-    origin = SelectField(u'Which location you traveling from?',
-        validators=[DataRequired()])   
-    destination = SelectField(u'Which location are you traveling to?',
+    origin = SelectField('Going From ',
         validators=[DataRequired()])
-    date = DateField('When are you travelling?',
+    destination = SelectField(' To ',
+        validators=[DataRequired()])
+    date = DateField('Traveling On ',
                             validators = [DataRequired()],
                             render_kw={"placeholder": "MM/DD/YY"},
-                            format="%m/%d/%y")
+                            format="%m/%d/%y",
+                            id="datepicker")
     search = SubmitField('Search')
-
-
