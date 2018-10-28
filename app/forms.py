@@ -7,19 +7,18 @@ from app import app
 from flask_bootstrap import Bootstrap
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username    = StringField('Username',           validators=[DataRequired()])
+    password    = PasswordField('Password',         validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+    submit      = SubmitField('Sign In')
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+    username    = StringField('Username',           validators=[DataRequired()])
+    email       = StringField('Email',              validators=[DataRequired(), Email()])
+    password    = PasswordField('Password',         validators=[DataRequired()])
+    password2   = PasswordField('Repeat Password',  validators=[DataRequired(), EqualTo('password')])
+    submit      = SubmitField('Register')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -32,37 +31,41 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 class PostForm(FlaskForm):
-    post = TextAreaField('Say something', validators=[
-        DataRequired(), Length(min=1, max=140)])
-    submit = SubmitField('Submit')
+    post    = TextAreaField('Say something',
+            validators  = [DataRequired(), Length(min=1, max=140)])
+    submit  = SubmitField('Submit')
 
 class RequestForm(FlaskForm):
     origin_city = SelectField(u'Which city are you traveling from?',
-        validators=[DataRequired()], id='select_origin_city')
+            validators  = [DataRequired()], id='select_origin_city')
+
     origin = SelectField(u'Which location you traveling from?',
-        validators=[DataRequired()], id='select_origin')
+            validators  = [DataRequired()], id='select_origin')
+
     destination_city = SelectField(u'Which city are you traveling to?',
-        validators=[DataRequired()], id='select_destination_city')
+            validators  = [DataRequired()], id='select_destination_city')
+
     destination = SelectField(u'Which location are you traveling to?',
-        validators=[DataRequired()], id='select_destination')
+            validators  = [DataRequired()], id='select_destination')
 
     date = DateField('What date are you traveling?',
-                            validators = [DataRequired()],
-                            render_kw={"placeholder": "MM/DD/YY"},
-                            format="%m/%d/%y")
+            validators  = [DataRequired()],
+            render_kw   = {"placeholder": "MM/DD/YY"},
+            format      = "%m/%d/%y")
+
     time = TimeField('When are you traveling? (Please give a tentative time)',
-                            validators = [DataRequired()])
+            validators  = [DataRequired()])
+
     description = TextAreaField('Optional Description')
-    submit = SubmitField('Submit')
+    submit      = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
-    origin = SelectField('Going From ',
-        validators=[DataRequired()])
-    destination = SelectField(' To ',
-        validators=[DataRequired()])
-    date = DateField('Traveling On ',
-                            validators = [DataRequired()],
-                            render_kw={"placeholder": "MM/DD/YY"},
-                            format="%m/%d/%y",
-                            id="datepicker")
+    origin      = SelectField('Going From', validators = [DataRequired()])
+    destination = SelectField('To',         validators = [DataRequired()])
+
+    date = DateField('Traveling On ',       validators = [DataRequired()],
+            render_kw   = {"placeholder": "MM/DD/YY"},
+            format      = "%m/%d/%y",
+            id          = "datepicker")
+
     search = SubmitField('Search')
