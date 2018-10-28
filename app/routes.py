@@ -15,7 +15,10 @@ def index():
     search.destination.choices = app.config['LOCATIONS']
 
     if search.validate_on_submit():
-        return search_results(search.origin.data, search.destination.data, search.date.data)
+        if search.destination.data == search.origin.data:
+            flash("Origin and Destination cannot be the same")
+        else:
+            return search_results(search.origin.data, search.destination.data, search.date.data)
 
     if current_user.is_authenticated:
         return render_template('index.html', user=current_user, requests=requests, form = search)
@@ -98,6 +101,12 @@ def showdb():
     for u in User.query.all():
         out += str(u.id) +" -- "+ u.username +" -- "+ u.email +"<br/>"
 
+    out += "<br/>"
+
+    for r in Request.query.all():
+        out += r.author.username +" is going from "+ r.origin +" to "+ r.destination +" on "
+        out += str(r.date) + " at " + str(r.time) + " because \"" + r.description + "\"<br/>"
+
     return out
 
 
@@ -129,10 +138,14 @@ def request_form():
                           time = form.time.data,
                           author = current_user,
                           description = form.description.data)
-        db.session.add(request)
-        db.session.commit()
-        flash('Your request has been posted!')
-        return redirect(url_for('index'))
+
+        if form.destination.data == form.origin.data:
+            flash("Origin and Destination cannot be the same")
+        else:
+            db.session.add(request)
+            db.session.commit()
+            flash('Your request has been posted!')
+            return redirect(url_for('index'))
     return render_template('requestForm.html', title='Request', form=form)
 
 
