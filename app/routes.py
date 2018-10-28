@@ -1,17 +1,24 @@
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm
+from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm, SearchForm
 from app.models import User, Post, Request
 from werkzeug.urls import url_parse
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods = ['GET', 'POST'])
+@app.route('/index', methods = ['GET', 'POST'])
 def index():
     requests = Request.query.all()
+    search = SearchForm(request.form)
+    search.origin.choices = app.config['LOCATIONS']
+    search.destination.choices = app.config['LOCATIONS']
+
+    if search.validate_on_submit():
+        return search_results(search.origin.data, search.destination.data, search.date.data)
+
     if current_user.is_authenticated:
-        return render_template('index.html', user=current_user, requests=requests)
+        return render_template('index.html', user=current_user, requests=requests, form = search)
     else:
         return render_template('index.html')
 
@@ -147,3 +154,10 @@ def _get_destination_locations():
     city = request.args.get('destination_city', "Washington D.C.", type=str)
     locations = app.config['LOCATIONS_BY_CITY'].get(city)
     return jsonify(locations)
+
+@app.route('/results')
+def search_results(origin_required, destination_required, date_required):
+    results = Request.query.filter_by(origin = origin_required,
+                                      destination = destination_required,
+                                      date = date_required).all()
+    return render_template('results.html', results = results)

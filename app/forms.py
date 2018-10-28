@@ -55,4 +55,15 @@ class RequestForm(FlaskForm):
     description = TextAreaField('Optional Description')
     submit = SubmitField('Submit')
 
+class SearchForm(FlaskForm):
+    origin = SelectField(u'Which location you traveling from?',
+        validators=[DataRequired()])   
+    destination = SelectField(u'Which location are you traveling to?',
+        validators=[DataRequired()])
+    date = DateField('When are you travelling?',
+                            validators = [DataRequired()],
+                            render_kw={"placeholder": "MM/DD/YY"},
+                            format="%m/%d/%y")
+    search = SubmitField('Search')
+
 
