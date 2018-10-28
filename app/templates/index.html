@@ -11,15 +11,21 @@
 	  <div id="landing-text" class="user">
 
 		<h1>Welcome to UR Connect, {{ user.username.capitalize() }}!</h1>
-
-		{% for request in requests %}
+		<!--{% for request in requests %}
 			  {% include '_request.html' %}
-		{% endfor %}
-
-		<a id="request-btn" class="btn btn-primary active" href="{{ url_for('request_form') }}">
-			Make new request
-		</a>
-
+		{% endfor %}-->
+		<div id="search-container">
+			<h2>Search</h2>
+			<div class="row">
+			 	<div class="col-md-12">
+				  	{{ wtf.quick_form(form) }}
+			  	</div>
+			</div>
+			<hr/>
+			<a id="request-btn" class="btn btn-primary active" href="{{ url_for('request_form') }}">
+				Make new request
+			</a>
+		</div>
 
 
   {% else %}
@@ -36,7 +42,18 @@
 		<a id="login-btn"    class="btn btn-warning active" href="{{ url_for('login') }}">
 		 	Log In</a>
 	  {% endif %}
+
     </div>
   </div>
 </main>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+ 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript">
+	$(function () {
+	  $('#datepicker').datetimepicker({ format: 'MM/DD/YY' });
+	});
+	</script>
 {% endblock %}

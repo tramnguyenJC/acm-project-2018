@@ -5,8 +5,6 @@
     padding: 6px;
 }
 
-
-
 body {
     overflow-x: hidden;
     background-color: white;
@@ -46,14 +44,14 @@ body > .container {
     margin-left: -20px;
     padding: 0px 40px 20px 40px;
     background: rgba(255, 255, 255, 0.7);
-    top: 25vh;
     line-height: 2.2em;
 } #home #landing-text.anon {
+    top: 25vh;
     max-width: 45%;
 } #home #landing-text.user {
+    top: 20vh;
     max-width: 60%;
 }
-
 
 #home #landing-text.anon {
     text-align: center;
@@ -79,6 +77,43 @@ body > .container {
     font-size: 1.8em;
     width: 150px;
     padding: 10px;
+}
+
+/* Search Styles */
+#home #landing-text #search-container { margin-left: 20px; }
+#home #landing-text #search-container form {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px;
+}
+#home #landing-text .form-group {
+    display: inline;
+    margin-left: 10px;
+}
+#home #landing-text .control-label {
+    font-size: 1.3em;   font-weight: normal;
+    width: 15%;         min-width: 115px;
+} #home #landing-text label[for=destination].control-label {
+    width: auto;        min-width: 0;
+} #home #landing-text label[for=date].control-label {
+    display: inline;
+    min-width: 120px;
+    padding-right: 1.5%;
+}
+
+#home #landing-text select.form-control {
+    width: min-content;     max-width: 34%  !important;
+    display: inline-block;
+    margin: 15px 0;
+    font-size: 1.2em;
+}
+#home #landing-text input.form-control {
+    display: inline-block;
+    width: 30% !important;
+    font-size: 1.2em;
+}
+#home #landing-text form .btn#search {
+    display: block;
+    margin: 20px 10px;
 }
 
 footer {
