@@ -1,19 +1,9 @@
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm
+from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm, SearchForm
 from app.models import User, Post, Request
 from werkzeug.urls import url_parse
-
-
-@app.route('/')
-@app.route('/index')
-def index():
-    requests = Request.query.all()
-    
-    if current_user.is_authenticated:
-        return render_template('index.html', user=current_user, requests=requests)
-# Beginning of routes definitions
 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
