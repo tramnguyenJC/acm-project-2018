@@ -6,26 +6,25 @@ from app.models import User, Post, Request
 from werkzeug.urls import url_parse
 from app.email import send_request_email
 
-
-# Beginning of routes definitions
-
-
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 def index():
-    requests                    = Request.query.all()
-    search                      = SearchForm(request.form)
-    search.origin.choices       = app.config['LOCATIONS']
-    search.destination.choices  = app.config['LOCATIONS']
+    requests = Request.query.all()
+    search = SearchForm(request.form)
+    search.origin.choices = sorted(app.config['LOCATIONS'], key=lambda x: x[1])
+    search.destination.choices = sorted(app.config['LOCATIONS'], key=lambda x: x[1])
 
     if search.validate_on_submit():
         if search.destination.data == search.origin.data:
             flash("Origin and Destination cannot be the same")
         else:
-            return search_results(search.origin.data, search.destination.data, search.date.data)
+            return redirect(url_for('search_results', origin=search.origin.data,
+            destination=search.destination.data, date=search.date.data))
+
 
     if current_user.is_authenticated:
-        return render_template('index.html', user=current_user, requests=requests, form = search)
+        return render_template('index.html', user=current_user, requests=requests, form=search)
+
     else:
         return render_template('index.html')
 
@@ -180,7 +179,7 @@ def request_form():
             db.session.add(request)
             db.session.commit()
             flash('Your request has been posted!')
-            return redirect(url_for('index'))
+            # return redirect(url_for('index'))
     return render_template('requestForm.html', title='Request', form=form)
 
 
@@ -202,19 +201,19 @@ def _get_destination_locations():
     # Get available locations to display in SelectField after User
     # has selected the city SelectField.
     # For JavaScript request.
-    city        = request.args.get('destination_city', "Washington D.C.", type=str)
-    locations   = app.config['LOCATIONS_BY_CITY'].get(city)
+    city = request.args.get('destination_city', "Washington D.C.", type=str)
+    locations = app.config['LOCATIONS_BY_CITY'].get(city)
 
     return jsonify(locations)
 
-
-
-@app.route('/results')
-def search_results(origin_required, destination_required, date_required):
-    results = Request.query.filter_by(origin        = origin_required,
-                                      destination   = destination_required,
-                                      date          = date_required).all()
-
+@app.route('/search_results')
+def search_results():
+    origin_requested = request.args.get('origin')
+    destination_requested = request.args.get('destination')
+    date_requested = request.args.get('date')
+    results = Request.query.filter_by(origin = origin_requested,
+                                      destination = destination_requested,
+                                      date = date_requested).all()
     return render_template('results.html', results = results)
 
 # sending email notification to user

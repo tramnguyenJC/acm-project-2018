@@ -48,13 +48,12 @@ class RequestForm(FlaskForm):
     destination = SelectField(u'Which location are you traveling to?',
             validators  = [DataRequired()], id='select_destination')
 
-    date = DateField('What date are you traveling?',
-            validators  = [DataRequired()],
-            render_kw   = {"placeholder": "MM/DD/YY"},
-            format      = "%m/%d/%y")
-
-    time = TimeField('When are you traveling? (Please give a tentative time)',
-            validators  = [DataRequired()])
+    date = DateField(u'What date are you traveling?',
+        validators = [DataRequired()], id='datepick',
+        render_kw={"placeholder": "MM/DD/YY"},format="%m/%d/%y",)
+                            
+    time = TimeField('When are you traveling? (Please give a tentative time)', 
+                            validators = [DataRequired()])
 
     description = TextAreaField('Optional Description')
     submit      = SubmitField('Submit')

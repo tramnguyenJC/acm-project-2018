@@ -2,19 +2,33 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+  {{ super() }}
+  <link rel ="stylesheet" href= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+{% endblock %}
+
 {% block app_content %}
-    <h1>Request</h1>
-    <div class="row">
-        <div class="col-md-4">
+    <div class="container">
+    	<h1>Request</h1>
+    	<div class="row">
+        	<div class="col-md-4">
             {{ wtf.quick_form(form) }}
-        </div>
-    </div>
+        	</div>
+    	</div>
+    </div>	
 {% endblock %}
 
 {% block scripts %}
   {{super()}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+  
   <script charset="utf-8" type="text/javascript">
 	$(function() {
+		$('#datepick').datetimepicker({
+            format: 'MM/DD/YY' /*remove this line if you want to use time as well */
+        });
+	
 		console.log("In function");
 
 	    var dropdown = {
@@ -75,6 +89,7 @@
 	    dropdown.destination_city.on('change', function() {
 	    	updateDestinationLocations();
 	    });
+
 
 	});
 

@@ -18,4 +18,5 @@ login.login_view = 'login'
 bootstrap = Bootstrap(app)
 mail = Mail(app)
 
+
 from app import routes, models
