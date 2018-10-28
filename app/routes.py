@@ -11,14 +11,15 @@ from werkzeug.urls import url_parse
 def index():
     requests = Request.query.all()
     search = SearchForm(request.form)
-    search.origin.choices = app.config['LOCATIONS']
-    search.destination.choices = app.config['LOCATIONS']
+    search.origin.choices = sorted(app.config['LOCATIONS'], key=lambda x: x[1])
+    search.destination.choices = sorted(app.config['LOCATIONS'], key=lambda x: x[1])
 
     if search.validate_on_submit():
-        return search_results(search.origin.data, search.destination.data, search.date.data)
+        return redirect(url_for('search_results', origin=search.origin.data,
+            destination=search.destination.data, date=search.date.data))
 
     if current_user.is_authenticated:
-        return render_template('index.html', user=current_user, requests=requests, form = search)
+        return render_template('index.html', user=current_user, requests=requests, form=search)
     else:
         return render_template('index.html')
 
@@ -121,6 +122,9 @@ def request_form():
     form.destination.choices = app.config['LOCATIONS']
 
     if form.validate_on_submit():
+        if form.origin.data == form.destination.data:
+            flash('Destination needs to be different from traveling origin.')
+            return render_template('requestForm.html', title='Request', form=form)
         request = Request(origin_city = form.origin_city.data,
                           origin = form.origin.data,
                           destination_city = form.destination_city.data,
@@ -132,7 +136,7 @@ def request_form():
         db.session.add(request)
         db.session.commit()
         flash('Your request has been posted!')
-        return redirect(url_for('index'))
+        # return redirect(url_for('index'))
     return render_template('requestForm.html', title='Request', form=form)
 
 
@@ -143,6 +147,7 @@ def _get_origin_locations():
     # For JavaScript request.
     city = request.args.get('origin_city', "Richmond", type=str)
     locations = app.config['LOCATIONS_BY_CITY'].get(city)
+    # locations.sort()
     return jsonify(locations)
 
 
@@ -153,11 +158,15 @@ def _get_destination_locations():
     # For JavaScript request.
     city = request.args.get('destination_city', "Washington D.C.", type=str)
     locations = app.config['LOCATIONS_BY_CITY'].get(city)
+    # locations.sort()
     return jsonify(locations)
 
-@app.route('/results')
-def search_results(origin_required, destination_required, date_required):
-    results = Request.query.filter_by(origin = origin_required,
-                                      destination = destination_required,
-                                      date = date_required).all()
+@app.route('/search_results')
+def search_results():
+    origin_requested = request.args.get('origin')
+    destination_requested = request.args.get('destination')
+    date_requested = request.args.get('date')
+    results = Request.query.filter_by(origin = origin_requested,
+                                      destination = destination_requested,
+                                      date = date_requested).all()
     return render_template('results.html', results = results)
