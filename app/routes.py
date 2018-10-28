@@ -8,7 +8,6 @@ from werkzeug.urls import url_parse
 
 # Beginning of routes definitions
 
-
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 def index():
@@ -21,7 +20,9 @@ def index():
         if search.destination.data == search.origin.data:
             flash("Origin and Destination cannot be the same")
         else:
-            return search_results(search.origin.data, search.destination.data, search.date.data)
+            return redirect(url_for('search_results', origin=search.origin.data,
+            destination=search.destination.data, date=search.date.data))
+
 
     if current_user.is_authenticated:
         return render_template('index.html', user=current_user, requests=requests, form=search)
