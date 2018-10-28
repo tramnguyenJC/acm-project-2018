@@ -5,11 +5,15 @@ from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm
 from app.models import User, Post, Request
 from werkzeug.urls import url_parse
 
+
 @app.route('/')
 @app.route('/index')
 def index():
     requests = Request.query.all()
-    return render_template('index.html', title='Home', requests = requests)
+    if current_user.is_authenticated:
+        return render_template('index.html', user=current_user, requests=requests)
+    else:
+        return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,6 +83,7 @@ def chat():
     return render_template("chat.html", title='Home Page', form=form,
                            posts=posts)
 
+
 # Very basic links to look at and clear databases
 @app.route('/showdb')
 def showdb():
@@ -87,6 +92,7 @@ def showdb():
         out += str(u.id) +" -- "+ u.username +" -- "+ u.email +"<br/>"
 
     return out
+
 
 @app.route('/cleardb')
 def cleardb():
@@ -97,6 +103,7 @@ def cleardb():
 
     return "database cleared"
 
+
 @app.route('/request_form', methods=['GET', 'POST'])
 @login_required
 def request_form():
@@ -105,10 +112,10 @@ def request_form():
     form.origin.choices = app.config['LOCATIONS']
     form.destination_city.choices = app.config['CITIES']
     form.destination.choices = app.config['LOCATIONS']
- 
+
     if form.validate_on_submit():
         request = Request(origin_city = form.origin_city.data,
-                          origin = form.origin.data, 
+                          origin = form.origin.data,
                           destination_city = form.destination_city.data,
                           destination = form.destination.data,
                           date = form.date.data,
@@ -124,16 +131,17 @@ def request_form():
 
 @app.route('/get_origin_locations')
 def _get_origin_locations():
-    # Get available locations to display in SelectField after User 
+    # Get available locations to display in SelectField after User
     # has selected the city SelectField.
     # For JavaScript request.
     city = request.args.get('origin_city', "Richmond", type=str)
     locations = app.config['LOCATIONS_BY_CITY'].get(city)
     return jsonify(locations)
 
+
 @app.route('/get_destination_locations')
 def _get_destination_locations():
-    # Get available locations to display in SelectField after User 
+    # Get available locations to display in SelectField after User
     # has selected the city SelectField.
     # For JavaScript request.
     city = request.args.get('destination_city', "Washington D.C.", type=str)
