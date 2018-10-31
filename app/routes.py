@@ -6,6 +6,7 @@ from app.models import User, Post, Request
 from werkzeug.urls import url_parse
 from app.email import send_request_email
 
+
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 def index():
@@ -77,16 +78,15 @@ def register():
     if form.validate_on_submit():
         user = User(username = form.username.data, email=form.email.data)
         user.set_password(form.password.data)
-
-        db.session.add(user)
-        db.session.commit()
-
-        flash('Congratulations, you are now a registered user!')
-
-        return redirect(url_for('login'))
+        if (form.email.data)[-4:0] == '.edu':
+            db.session.add(user)
+            db.session.commit()    
+            flash('Congratulations, you are now a registered user! ')
+            return redirect(url_for('index'))
+        else:
+            flash("Please use your school email to register!")
 
     return render_template('register.html', title='Register', form=form)
-
 
 
 # username is dynamically determined. In url_for calls, also
