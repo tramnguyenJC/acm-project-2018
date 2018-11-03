@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm, SearchForm
+from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm, SearchForm, EmailContentForm
 from app.models import User, Post, Request
 from werkzeug.urls import url_parse
 from app.email import send_request_email
@@ -216,16 +216,25 @@ def search_results():
                                       date = date_requested).all()
     return render_template('results.html', results = results)
 
+
+
 # sending email notification to user
 @app.route('/email_notification/<user>', methods=['GET', 'POST'])
 def email_notification(user):
     if current_user.is_authenticated == False:
         return redirect(url_for('login'))
-    user = User.query.filter_by(username=user).first()
-    email = user.email
-    if email:
-        send_request_email(email)
-        flash('Request Sent!')
-        return redirect(url_for('index'))
-    requests = Request.query.all()
-    return render_template('index.html', title='Home', requests = requests)
+    form = EmailContentForm()
+    if form.validate_on_submit():
+        sender_name = form.name.data
+        sender_contact = form.contact.data
+        sender_message = form.message.data
+        recipient = User.query.filter_by(username=user).first()
+        recipient_username = recipient.username
+        recipient_email = recipient.email
+        if sender_name and sender_contact and recipient_username and recipient_email:
+            send_request_email(sender_name, sender_contact, sender_message,
+                                recipient_username, recipient_email)
+            flash('Request Sent!')
+            return redirect(url_for('index'))
+    # requests = Request.query.all()
+    return render_template('email_content.html', form=form)

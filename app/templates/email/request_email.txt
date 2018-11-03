@@ -1,6 +1,10 @@
-Hi,
+Dear {{ recipient_username }},
 
-Someone sent a request!!!!!!
+{{ sender_name }} sent you a request!
+Contact: {{ sender_contact }}
+{% if sender_message %}
+    More Information: {{ sender_message }}
+{% endif %}
 
 Sincerely,
 

@@ -51,8 +51,8 @@ class RequestForm(FlaskForm):
     date = DateField(u'What date are you traveling?',
         validators = [DataRequired()], id='datepick',
         render_kw={"placeholder": "MM/DD/YY"},format="%m/%d/%y",)
-                            
-    time = TimeField('When are you traveling? (Please give a tentative time)', 
+
+    time = TimeField('When are you traveling? (Please give a tentative time)',
                             validators = [DataRequired()])
 
     description = TextAreaField('Optional Description')
@@ -68,3 +68,9 @@ class SearchForm(FlaskForm):
             id          = "datepicker")
 
     search = SubmitField('Search')
+
+class EmailContentForm(FlaskForm):
+    name = StringField('Your Name (required)', validators=[DataRequired()])
+    contact = StringField('Preferred Contact (required)', validators=[DataRequired()])
+    message = TextAreaField('More Information You Want to Provide (optional)')
+    submit = SubmitField('Submit')
