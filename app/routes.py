@@ -83,15 +83,15 @@ def register():
         user = User(username = form.username.data, email=form.email.data, email_confirmed = False)
         user.set_password(form.password.data)
         
-        # if (form.email.data)[-4:0] == '.edu':
-        db.session.add(user)
-        db.session.commit()    
-        token = app.config['SERIALIZER'].dumps(user.email, salt='email-confirm') 
-        send_confirmation_email(user.email, token, user.username)
-        flash('Congratulations, you are now a registered user! Please check your email for confirmation')
-        return redirect(url_for('login'))
-        # else:
-        #     flash("Please use your school email to register!")  
+        if (form.email.data)[-4:0] == '.edu':
+            db.session.add(user)
+            db.session.commit()    
+            token = app.config['SERIALIZER'].dumps(user.email, salt='email-confirm') 
+            send_confirmation_email(user.email, token, user.username)
+            flash('Congratulations, you are now a registered user! Please check your email for confirmation')
+            return redirect(url_for('index'))
+        else:
+            flash("Please use your school email to register!")  
 
     return render_template('register.html', title='Register', form=form)
 
