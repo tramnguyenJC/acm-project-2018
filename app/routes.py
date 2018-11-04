@@ -4,7 +4,8 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm, SearchForm
 from app.models import User, Post, Request
 from werkzeug.urls import url_parse
-from app.email import send_request_email
+from app.email import send_password_reset_email, send_request_email
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm
 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
@@ -229,3 +230,32 @@ def email_notification(user):
         return redirect(url_for('index'))
     requests = Request.query.all()
     return render_template('index.html', title='Home', requests = requests)
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Reset Password', form=form)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset.')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)
