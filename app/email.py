@@ -13,14 +13,18 @@ def send_email(subject, sender, recipients, text_body):
     #mail.send(msg)
     Thread(target=send_async_email, args=(app, msg)).start()
 
-def send_request_email(sender_name, sender_contact, sender_message,
-                        recipient_username, recipient_email):
+def send_request_email(sender_name, sender_contact1, sender_contact2, sender_message,
+                        recipient_username, recipient_email, origin, destination, date):
     send_email('You Got a Request!',
                sender=app.config['ADMINS'][0],
                recipients=[recipient_email],
                text_body=render_template('email/request_email.txt',
                                           sender_name=sender_name,
-                                          sender_contact=sender_contact,
+                                          sender_contact1=sender_contact1,
+                                          sender_contact2=sender_contact2,
                                           sender_message=sender_message,
                                           recipient_username=recipient_username,
-                                          recipient_email=recipient_email))
+                                          recipient_email=recipient_email,
+                                          origin=origin,
+                                          destination=destination,
+                                          date=date))

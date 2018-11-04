@@ -71,6 +71,7 @@ class SearchForm(FlaskForm):
 
 class EmailContentForm(FlaskForm):
     name = StringField('Your Name (required)', validators=[DataRequired()])
-    contact = StringField('Preferred Contact (required)', validators=[DataRequired()])
+    contact1 = StringField('Primary Contact (required)', validators=[DataRequired()])
+    contact2 = StringField('Secondary Contact (optional)')
     message = TextAreaField('More Information You Want to Provide (optional)')
     submit = SubmitField('Submit')
