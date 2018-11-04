@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, url_for
 from flask_mail import Message
 from app import app, mail
 from threading import Thread
@@ -7,6 +7,7 @@ from threading import Thread
 def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
+
 
 def send_email(subject, sender, recipients, text_body):
     msg = Message(subject, sender=sender, recipients=recipients)
@@ -29,6 +30,15 @@ def send_request_email(sender_name, sender_contact1, sender_contact2, sender_mes
                                           origin=origin,
                                           destination=destination,
                                           date=date))
+
+
+def send_confirmation_email(user_email, token, username):
+  link = "127.0.0.1:5000/confirm_email/" + token 
+  message = render_template('_email_confirmation.html', link=link, username=username)
+  send_email("Confirmation Email for UR connect", 
+        sender = app.config['ADMINS'][0],
+        recipients=[user_email],
+        text_body=message)
 
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
