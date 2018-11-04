@@ -214,7 +214,7 @@ def email_notification():
         recipient = User.query.filter_by(username=user).first()
         recipient_username = recipient.username
         recipient_email = recipient.email
-        if sender_name and sender_contact1 and recipient_username and recipient_email and orgin and destination and date:
+        if sender_name and sender_contact1 and recipient_username and recipient_email and origin and destination and date:
             send_request_email(sender_name, sender_contact1, sender_contact2, sender_message,
                                 recipient_username, recipient_email, origin, destination, date)
             flash('Request Sent!')
