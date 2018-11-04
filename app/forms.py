@@ -48,7 +48,7 @@ class RequestForm(FlaskForm):
             id='datepick',
             render_kw={"placeholder": "MM/DD/YY"},
             format='%m/%d/%y')
-                            
+
     time = TimeField('When are you traveling? (Please give a tentative time)',
             validators = [DataRequired()])
             # id='timepick',
@@ -68,6 +68,16 @@ class SearchForm(FlaskForm):
             id          = 'datepicker')
 
     search = SubmitField('Search')
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('New Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat New Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')
 
 class EmailContentForm(FlaskForm):
     name = StringField('Your Name (required)', validators=[DataRequired()])
