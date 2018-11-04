@@ -30,11 +30,6 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
-class PostForm(FlaskForm):
-    post    = TextAreaField('Say something',
-            validators  = [DataRequired(), Length(min=1, max=140)])
-    submit  = SubmitField('Submit')
-
 class RequestForm(FlaskForm):
     origin_city = SelectField(u'Which city are you traveling from?',
             validators  = [DataRequired()], id='select_origin_city')
@@ -49,11 +44,15 @@ class RequestForm(FlaskForm):
             validators  = [DataRequired()], id='select_destination')
 
     date = DateField(u'What date are you traveling?',
-        validators = [DataRequired()], id='datepick',
-        render_kw={"placeholder": "MM/DD/YY"},format="%m/%d/%y",)
+            validators = [DataRequired()],
+            id='datepick',
+            render_kw={"placeholder": "MM/DD/YY"},
+            format='%m/%d/%y')
 
     time = TimeField('When are you traveling? (Please give a tentative time)',
-                            validators = [DataRequired()])
+            validators = [DataRequired()])
+            # id='timepick',
+            #format='%I:%M %p')
 
     description = TextAreaField('Optional Description')
     submit      = SubmitField('Submit')
@@ -62,10 +61,11 @@ class SearchForm(FlaskForm):
     origin      = SelectField('Going From', validators = [DataRequired()])
     destination = SelectField('To',         validators = [DataRequired()])
 
-    date = DateField('Traveling On ',       validators = [DataRequired()],
+    date = DateField('Traveling On ',
+            validators = [DataRequired()],
             render_kw   = {"placeholder": "MM/DD/YY"},
             format      = "%m/%d/%y",
-            id          = "datepicker")
+            id          = 'datepicker')
 
     search = SubmitField('Search')
 
@@ -78,3 +78,10 @@ class ResetPasswordForm(FlaskForm):
     password2 = PasswordField(
         'Repeat New Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
+
+class EmailContentForm(FlaskForm):
+    name = StringField('Your Name (required)', validators=[DataRequired()])
+    contact1 = StringField('Primary Contact (required)', validators=[DataRequired()])
+    contact2 = StringField('Secondary Contact (optional)')
+    message = TextAreaField('More Information You Want to Provide (optional)')
+    submit = SubmitField('Submit')
