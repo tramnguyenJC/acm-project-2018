@@ -3,9 +3,9 @@
 
 {% block app_content %}
     <div class="container">
-    	<h1>Email Content</h1>
-        <p>Please fill out the following form</p>
-        <p>We will send the information you provided to the other user.</p>
+    	<h1>Connect With {{ recipient_username }}</h1>
+        <p>Please fill out the following form.
+        We will send the information you provided to the other user.</p>
     	<div class="row">
         	<div class="col-md-4">
             {{ wtf.quick_form(form) }}

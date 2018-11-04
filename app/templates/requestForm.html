@@ -15,14 +15,14 @@
             {{ wtf.quick_form(form) }}
         	</div>
     	</div>
-    </div>	
+    </div>
 {% endblock %}
 
 {% block scripts %}
   {{super()}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-  
+
   <script charset="utf-8" type="text/javascript">
 	$(function() {
 		$('#datepick').datetimepicker({
@@ -31,7 +31,7 @@
         $('#timepick').datetimepicker({
     		format:'HH:mm'
         });
-	
+
 		console.log("In function");
 
 	    var dropdown = {

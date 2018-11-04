@@ -98,7 +98,7 @@ def user(username):
     user    = User.query.filter_by(username=username).first_or_404()
     requests   = user.requests.all()
 
-    return render_template('user.html', user=user, current_user = current_user, 
+    return render_template('user.html', user=user, current_user = current_user,
         requests = requests)
 
 
@@ -201,26 +201,26 @@ def search_results():
 def email_notification():
     if current_user.is_authenticated == False:
         return redirect(url_for('login'))
+    user = request.args.get('user')
+    origin = request.args.get('origin')
+    destination = request.args.get('destination')
+    date = request.args.get('date')
+    recipient = User.query.filter_by(username=user).first()
+    recipient_username = recipient.username
+    recipient_email = recipient.email
     form = EmailContentForm()
     if form.validate_on_submit():
         sender_name = form.name.data
         sender_contact1 = form.contact1.data
         sender_contact2 = form.contact2.data
         sender_message = form.message.data
-        user = request.args.get('user')
-        origin = request.args.get('origin')
-        destination = request.args.get('destination')
-        date = request.args.get('date')
-        recipient = User.query.filter_by(username=user).first()
-        recipient_username = recipient.username
-        recipient_email = recipient.email
         if sender_name and sender_contact1 and recipient_username and recipient_email and origin and destination and date:
             send_request_email(sender_name, sender_contact1, sender_contact2, sender_message,
                                 recipient_username, recipient_email, origin, destination, date)
             flash('Request Sent!')
             return redirect(url_for('index'))
     # requests = Request.query.all()
-    return render_template('email_content.html', form=form)
+    return render_template('email_content.html', form=form, recipient_username=recipient_username)
 
 
 @app.route('/delete_request/<request_id>')
