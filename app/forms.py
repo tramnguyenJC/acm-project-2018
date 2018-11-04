@@ -30,11 +30,6 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
-class PostForm(FlaskForm):
-    post    = TextAreaField('Say something',
-            validators  = [DataRequired(), Length(min=1, max=140)])
-    submit  = SubmitField('Submit')
-
 class RequestForm(FlaskForm):
     origin_city = SelectField(u'Which city are you traveling from?',
             validators  = [DataRequired()], id='select_origin_city')
@@ -55,9 +50,9 @@ class RequestForm(FlaskForm):
             format='%m/%d/%y')
                             
     time = TimeField('When are you traveling? (Please give a tentative time)',
-            validators = [DataRequired()],
-            id='timepick',
-            format='%I:%M %p')
+            validators = [DataRequired()])
+            # id='timepick',
+            #format='%I:%M %p')
 
     description = TextAreaField('Optional Description')
     submit      = SubmitField('Submit')
