@@ -1,0 +1,14 @@
+    <table class="table table-hover">
+        <tr>
+            <td>
+                <a href="{{ url_for('user', username=result.author.username) }}">
+                    {{ result.author.username }}
+                </a>
+                leaves from {{ result.origin }} to {{ result.destination }} on {{ result.date }} around {{ result.time }}.
+                <a href="{{ url_for('email_notification', user=result.author.username, _external=True) }}"
+                   type="button" class="btn btn-primary">
+                    Connect
+                </a>
+            </td>
+        </tr>
+    </table>

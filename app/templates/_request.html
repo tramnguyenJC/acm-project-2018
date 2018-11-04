@@ -5,6 +5,10 @@
                     {{ request.author.username }}
                 </a>
                 leaves from {{ request.origin }} to {{ request.destination }} on {{ request.date }} around {{ request.time }}.
+                <a href="{{ url_for('email_notification', user=request.author.username, _external=True) }}"
+                   type="button" class="btn btn-primary">
+                    Connect
+                </a>
             </td>
         </tr>
     </table>
