@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, PostForm, RequestForm, SearchForm
-from app.models import User, Post, Request
+from app.forms import LoginForm, RegistrationForm, RequestForm, SearchForm, EmailContentForm
+from app.models import User, Request
 from werkzeug.urls import url_parse
 from app.email import send_request_email, send_confirmation_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
@@ -118,32 +118,10 @@ def confirm_email(token):
 @login_required
 def user(username):
     user    = User.query.filter_by(username=username).first_or_404()
-    posts   = user.posts.order_by(Post.timestamp.desc()).all()
+    requests   = user.requests.all()
 
-    return render_template('user.html', user=user, posts=posts)
-
-
-
-@app.route('/chat', methods=['GET', 'POST'])
-@login_required
-def chat():
-    form = PostForm()
-
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-
-        db.session.add(post)
-        db.session.commit()
-
-        flash('Your post is now live!')
-
-        return redirect(url_for('chat'))
-
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-
-    return render_template("chat.html", title='Home Page', form=form,
-                           posts=posts)
-
+    return render_template('user.html', user=user, current_user = current_user, 
+        requests = requests)
 
 
 # Very basic links to look at and clear databases
@@ -238,16 +216,77 @@ def search_results():
                                       date = date_requested).all()
     return render_template('results.html', results = results)
 
+
+
 # sending email notification to user
-@app.route('/email_notification/<user>', methods=['GET', 'POST'])
-def email_notification(user):
+@app.route('/email_notification', methods=['GET', 'POST'])
+def email_notification():
     if current_user.is_authenticated == False:
         return redirect(url_for('login'))
-    user = User.query.filter_by(username=user).first()
-    email = user.email
-    if email:
-        send_request_email(email)
-        flash('Request Sent!')
-        return redirect(url_for('index'))
-    requests = Request.query.all()
-    return render_template('index.html', title='Home', requests = requests)
+    form = EmailContentForm()
+    if form.validate_on_submit():
+        sender_name = form.name.data
+        sender_contact1 = form.contact1.data
+        sender_contact2 = form.contact2.data
+        sender_message = form.message.data
+        user = request.args.get('user')
+        origin = request.args.get('origin')
+        destination = request.args.get('destination')
+        date = request.args.get('date')
+        recipient = User.query.filter_by(username=user).first()
+        recipient_username = recipient.username
+        recipient_email = recipient.email
+        if sender_name and sender_contact1 and recipient_username and recipient_email and origin and destination and date:
+            send_request_email(sender_name, sender_contact1, sender_contact2, sender_message,
+                                recipient_username, recipient_email, origin, destination, date)
+            flash('Request Sent!')
+            return redirect(url_for('index'))
+    # requests = Request.query.all()
+    return render_template('email_content.html', form=form)
+
+
+@app.route('/delete_request/<request_id>')
+@login_required
+def delete_request(request_id):
+    request = Request.query.filter_by(id=request_id).first()
+    db.session.delete(request)
+    db.session.commit()
+    flash('Request has been deleted.')
+    return redirect(url_for('user', username=current_user.username))
+
+
+@app.route('/edit_request/<request_id>', methods=['GET', 'POST'])
+@login_required
+def edit_request(request_id):
+    old_request = Request.query.filter_by(id=request_id).first()
+    form = RequestForm(
+        origin_city = old_request.origin_city,
+        origin = old_request.origin,
+        destination_city = old_request.destination_city,
+        destination = old_request.destination,
+        date = old_request.date,
+        time = old_request.time,
+        description = old_request.description)
+    form.origin_city.choices        = app.config['CITIES']
+    form.origin.choices             = app.config['LOCATIONS']
+    form.destination_city.choices   = app.config['CITIES']
+    form.destination.choices        = app.config['LOCATIONS']
+
+    if form.validate_on_submit():
+        request = old_request
+        request.origin_city       = form.origin_city.data
+        request.origin            = form.origin.data
+        request.destination_city  = form.destination_city.data
+        request.destination       = form.destination.data
+        request.date              = form.date.data
+        request.time              = form.time.data
+        request.description       = form.description.data
+
+        if form.destination.data == form.origin.data:
+            flash("Origin and Destination cannot be the same")
+        else:
+            db.session.add(request)
+            db.session.commit()
+            flash('Your request has been edited!')
+            return redirect(url_for('user', username=current_user.username))
+    return render_template('requestForm.html', title='Request', form=form)

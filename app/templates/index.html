@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+  {{ super() }}
+  <link rel ="stylesheet" href= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+{% endblock %}
+
 {% block app_content %}
 
 <main id="home">
@@ -11,9 +16,6 @@
 	  <div id="landing-text" class="user">
 
 		<h1>Welcome to UR Connect, {{ user.username.capitalize() }}!</h1>
-		<!--{% for request in requests %}
-			  {% include '_request.html' %}
-		{% endfor %}-->
 		<div id="search-container">
 			<h2>Search</h2>
 			<div class="row">
