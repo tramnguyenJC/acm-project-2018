@@ -4,7 +4,10 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, RequestForm, SearchForm, EmailContentForm
 from app.models import User, Request
 from werkzeug.urls import url_parse
-from app.email import send_request_email
+from app.email import send_password_reset_email, send_request_email, send_confirmation_email
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm
+
 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
@@ -47,7 +50,9 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
-
+        if not user.email_confirmed:
+            flash('Please confirm your email')
+            return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
 
@@ -75,19 +80,39 @@ def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
-        user = User(username = form.username.data, email=form.email.data)
+        user = User(username = form.username.data, email=form.email.data, email_confirmed = False)
         user.set_password(form.password.data)
-
+        
+        # if (form.email.data)[-4:0] == '.edu':
         db.session.add(user)
-        db.session.commit()
-
-        flash('Congratulations, you are now a registered user!')
-
+        db.session.commit()    
+        token = app.config['SERIALIZER'].dumps(user.email, salt='email-confirm') 
+        send_confirmation_email(user.email, token, user.username)
+        flash('Congratulations, you are now a registered user! Please check your email for confirmation')
         return redirect(url_for('login'))
+        # else:
+        #     flash("Please use your school email to register!")  
 
     return render_template('register.html', title='Register', form=form)
 
 
+@app.route('/confirm_email/<token>', methods = ['GET', 'POST'])
+def confirm_email(token):
+    try:
+        email = app.config['SERIALIZER'].loads(token, salt='email-confirm', max_age=3600)
+    except SignatureExpired:
+        flash('The confirmation link has expired')
+        return redirect(url_for('index'))
+
+    user = User.query.filter_by(email=email).first()
+    if user.email_confirmed:
+        flash("Account has already been confirmed")
+    else:
+        user.email_confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash("Thank you for confirming")
+    return redirect(url_for('index'))
 
 # username is dynamically determined. In url_for calls, also
 # needs to set the username argument.
@@ -195,6 +220,34 @@ def search_results():
     return render_template('results.html', results = results)
 
 
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Reset Password', form=form)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset.')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)
 
 # sending email notification to user
 @app.route('/email_notification', methods=['GET', 'POST'])
