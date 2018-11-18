@@ -52,14 +52,19 @@ class RequestForm(FlaskForm):
     time = TimeField('When are you traveling? (Please give a tentative time)',
             validators = [DataRequired()],
             id='timepick',
-            format='%I:%M')
+            format='%I:%M %p')
 
-    description = TextAreaField('Optional Description')
+    description = TextAreaField('Description (Flight Times, Preferences, etc)',
+            validators = [DataRequired()])
     submit      = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
-    origin      = SelectField('Going From', validators = [DataRequired()])
-    destination = SelectField('To',         validators = [DataRequired()])
+    origin      =   SelectField('Going From',
+                    validators = [DataRequired()],
+                    default = "University of Richmond")
+    destination = SelectField('To',
+                    validators = [DataRequired()],
+                    default = "Richmond International Airport")
 
     date = DateField('Traveling On ',
             validators = [DataRequired()],

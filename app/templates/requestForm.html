@@ -29,10 +29,10 @@
             format: 'MM/DD/YY' /*remove this line if you want to use time as well */
         });
         $('#timepick').datetimepicker({
-    		format:'HH:mm'
+    		format:'h:mm A',
+            stepping: 15
         });
-
-		console.log("In function");
+        $('#timepick').removeAttr("type");
 
 	    var dropdown = {
 	    	origin_city: $('#select_origin_city'),
@@ -57,9 +57,10 @@
 	    			dropdown.origin.append(
 	    				$('<option>', {
 	    					value: item[0],
-	    					text: item[1]
+	    					text: item[1],
+                            selected: item[1] == "University of Richmond"
 	    				})
-	    				);
+	    			);
 	    		});
 	    		dropdown.origin.removeAttr('disabled');
 	    	});
@@ -76,7 +77,8 @@
 	    			dropdown.destination.append(
 	    				$('<option>', {
 	    					value: item[0],
-	    					text: item[1]
+	    					text: item[1],
+                            selected: item[1] == "Richmond International Airport"
 	    				})
 	    			);
 	    		});

@@ -9,12 +9,12 @@ body {
     overflow-x: hidden;
     background-color: white;
 }
-
 body > .container {
     min-height: 72vh;
     z-index: 1;
 }
 
+/* Search Styles For Index */
 #home #landing-banner {
     position: relative;
     height: 86vh;
@@ -25,7 +25,6 @@ body > .container {
     z-index: -1;
     margin-bottom: -10vh
 }
-
 #home #landing-banner img {
     object-fit: cover;
     position: relative;
@@ -52,26 +51,19 @@ body > .container {
     top: 20vh;
     max-width: 60%;
 }
-
 #home #landing-text.anon {
     text-align: center;
 }
-
 #home #landing-text h1 {
     font-size: 3em;
     padding: 20px 0;
     color: #555;
 }
-
-#home #landing-text p {
-    font-size: 1.5em;
-}
-
+#home #landing-text p { font-size: 1.5em; }
 #home #landing-text.user .btn {
     margin: 10px 0;
     font-size: 1.6em;
 }
-
 #home #landing-text.anon .btn {
     margin: 20px;
     font-size: 1.8em;
@@ -79,7 +71,6 @@ body > .container {
     padding: 10px;
 }
 
-/* Search Styles */
 #home #landing-text #search-container { margin-left: 20px; }
 #home #landing-text #search-container form {
     background-color: rgba(255, 255, 255, 0.2);
@@ -116,6 +107,31 @@ body > .container {
     margin: 20px 10px;
 }
 
+
+.user-list {
+    font-size: 1.2em;
+}
+.connect-btn {
+    float: right;
+    height: 100%;
+}
+.request-info {
+    float: left;
+    width: 80%;
+}
+.request-comment {
+    margin: 5px 20px;
+    padding: 5px;
+    background-color: white;
+    font-weight: bold;
+}
+.request-info .time-span {
+    color: #66F;
+    font-weight: bold;
+}
+
+
+/*  Footer Styles  */
 footer {
     width: 100%;
     min-height: 60px;

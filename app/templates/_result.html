@@ -1,18 +1,25 @@
-    <table class="table table-hover">
-        <tr>
-            <td>
-                <a href="{{ url_for('user', username=result.author.username) }}">
-                    {{ result.author.username }}
-                </a>
-                leaves from {{ result.origin }} to {{ result.destination }} on {{ result.date }} around {{ result.time }}.
-                <a href="{{ url_for('email_notification', user=result.author.username,
-                                                          origin=result.origin,
-                                                          destination=result.destination,
-                                                          date=result.date,
-                                                          _external=True) }}"
-                   type="button" class="btn btn-primary">
-                    Connect
-                </a>
-            </td>
-        </tr>
-    </table>
+<tr>
+    <td>
+        <div class="request-info">
+            <a href="{{ url_for('user', username=result.author.username) }}">
+                {{ result.author.username }}
+            </a>
+            <span>
+                leaves from {{ result.origin }} to {{ result.destination }} around
+                <span class="time-span">{{ to12HourTime(result.time) }}</span>
+            <br/>
+            <div class="request-comment">
+                {{ result.description }}
+            </div>
+        </div>
+        <a href="{{ url_for('email_notification',
+                    user=result.author.username,
+                    origin=result.origin,
+                    destination=result.destination,
+                    date=result.date,
+                    _external=True) }}"
+           type="button" class="btn btn-primary connect-btn">
+            Connect
+        </a>
+    </td>
+</tr>
