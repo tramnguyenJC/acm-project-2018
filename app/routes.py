@@ -156,7 +156,9 @@ def cleardb():
 
     return "database cleared"
 
-
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/request_form', methods=['GET', 'POST'])
 @login_required

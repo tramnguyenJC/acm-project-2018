@@ -89,4 +89,6 @@ class EmailContentForm(FlaskForm):
     contact1 = StringField('Primary Contact (required)', validators=[DataRequired()])
     contact2 = StringField('Secondary Contact (optional)')
     message = TextAreaField('More Information You Want to Provide (optional)')
+    agreement = BooleanField('I understand that the personal information I provided above will be shared with another user.',
+                            validators=[DataRequired()])
     submit = SubmitField('Submit')
