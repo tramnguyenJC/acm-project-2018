@@ -14,5 +14,4 @@ More Information: {{ sender_message }}
 {% endif %}
 
 Sincerely,
-
 ACM Team

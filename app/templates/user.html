@@ -2,27 +2,27 @@
 
 {% block app_content %}
     <h1>User: {{ user.username }}</h1>
-    <hr>
-    {% for request in requests %}
-	    <table class="table table-hover">
+
+    <h3>Your Current Requests</h3>
+	<table class="table table-hover user-list">
+        {% for request in requests %}
         <tr>
             <td>
-                <a href="{{ url_for('user', username=request.author.username) }}">
-                    {{ request.author.username }}
-                </a>
-                leaves from {{ request.origin }} to {{ request.destination }} on {{ request.date }} around {{ request.time }}.
+                <b>{{ request.origin }} -> {{ request.destination }}</b>
+
                 {% if request.author.username|string() == current_user.username|string() %}
-	                
-	            <a href="{{ url_for('delete_request', request_id=request.id) }}"> <i class="fas fa-trash-alt"></i>
-               	</a>
-                <a href="{{ url_for('edit_request', request_id=request.id) }}"> <i class="far fa-edit"></i>
-                </a>
+    	            <a href="{{ url_for('delete_request', request_id=request.id) }}"> <i class="fas fa-trash-alt"></i></a>
+                    <a href="{{ url_for('edit_request', request_id=request.id) }}"> <i class="far fa-edit"></i></a>
                 {% endif %}
 
+                <br/>
+                <div style="padding-left: 10px; margin-left: 10px; background-color: #f8f8f8;">
+                    <b>Leaving around:</b> {{ to12HourTime(request.time) }}, {{ request.date }}.
+                    <br/>
+                    <b>Description:</b> {{ request.description }}
+                </div>
             </td>
         </tr>
+        {% endfor %}
     </table>
-
-    {% endfor %}
 {% endblock %}
-

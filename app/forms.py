@@ -52,14 +52,19 @@ class RequestForm(FlaskForm):
     time = TimeField('When are you traveling? (Please give a tentative time)',
             validators = [DataRequired()],
             id='timepick',
-            format='%I:%M')
+            format='%I:%M %p')
 
-    description = TextAreaField('Optional Description')
+    description = TextAreaField('Description (Flight Times, Preferences, etc)',
+            validators = [DataRequired()])
     submit      = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
-    origin      = SelectField('Going From', validators = [DataRequired()])
-    destination = SelectField('To',         validators = [DataRequired()])
+    origin      =   SelectField('Going From',
+                    validators = [DataRequired()],
+                    default = "University of Richmond")
+    destination = SelectField('To',
+                    validators = [DataRequired()],
+                    default = "Richmond International Airport")
 
     date = DateField('Traveling On ',
             validators = [DataRequired()],
@@ -84,4 +89,6 @@ class EmailContentForm(FlaskForm):
     contact1 = StringField('Primary Contact (required)', validators=[DataRequired()])
     contact2 = StringField('Secondary Contact (optional)')
     message = TextAreaField('More Information You Want to Provide (optional)')
+    agreement = BooleanField('I understand that the personal information I provided above will be shared with another user.',
+                            validators=[DataRequired()])
     submit = SubmitField('Submit')
