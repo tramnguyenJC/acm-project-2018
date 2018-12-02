@@ -7,6 +7,7 @@ from werkzeug.urls import url_parse
 from app.email import send_password_reset_email, send_request_email, send_confirmation_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm
+from datetime import datetime
 
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -82,16 +83,16 @@ def register():
     if form.validate_on_submit():
         user = User(username = form.username.data, email=form.email.data, email_confirmed = False)
         user.set_password(form.password.data)
-        
+
         # if (form.email.data)[-4:0] == '.edu':
         db.session.add(user)
-        db.session.commit()    
-        token = app.config['SERIALIZER'].dumps(user.email, salt='email-confirm') 
+        db.session.commit()
+        token = app.config['SERIALIZER'].dumps(user.email, salt='email-confirm')
         send_confirmation_email(user.email, token, user.username)
         flash('Congratulations, you are now a registered user! Please check your email for confirmation')
         return redirect(url_for('login'))
         # else:
-        #     flash("Please use your school email to register!")  
+        #     flash("Please use your school email to register!")
 
     return render_template('register.html', title='Register', form=form)
 
@@ -132,12 +133,14 @@ def user(username):
 def showdb():
     out = ""
     for u in User.query.all():
-        out += str(u.id) +" -- "+ u.username +" -- "+ u.email +"<br/>"
+        if u.id and u.username and u.email:
+            out += str(u.id) +" -- "+ u.username +" -- "+ u.email +"<br/>"
 
     out += "<br/>"
 
     for r in Request.query.all():
-        out += r.author.username +" is going from "+ r.origin +" to "+ r.destination +" on "
+        if r.author:
+            out += r.author.username +" is going from "+ r.origin +" to "+ r.destination +" on "
         out += str(r.date) + " at " + str(r.time) + " because \"" + r.description + "\"<br/>"
 
     return out
@@ -153,7 +156,9 @@ def cleardb():
 
     return "database cleared"
 
-
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/request_form', methods=['GET', 'POST'])
 @login_required
@@ -321,3 +326,9 @@ def edit_request(request_id):
             flash('Your request has been edited!')
             return redirect(url_for('user', username=current_user.username))
     return render_template('requestForm.html', title='Request', form=form)
+
+
+def to12HourTime(time):
+    #time.strptime(time, "%H:%M:%S")
+    return time.strftime("%I:%M %p")
+app.jinja_env.globals.update(to12HourTime=to12HourTime)
