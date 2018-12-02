@@ -12,7 +12,7 @@ def send_async_email(app, msg):
 def send_email(subject, sender, recipients, text_body):
     msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = text_body
-    mail.send(msg)
+    #mail.send(msg)
     Thread(target=send_async_email, args=(app, msg)).start()
 
 def send_request_email(sender_name, sender_contact1, sender_contact2, sender_message,
