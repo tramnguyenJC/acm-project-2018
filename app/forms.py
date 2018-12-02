@@ -92,3 +92,7 @@ class EmailContentForm(FlaskForm):
     agreement = BooleanField('I understand that the personal information I provided above will be shared with another user.',
                             validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class ChangeEmailForm(FlaskForm):
+    new_email = StringField('Current Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Change')
