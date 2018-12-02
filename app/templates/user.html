@@ -10,17 +10,11 @@
             <td>
                 <b>{{ request.origin }} -> {{ request.destination }}</b>
 
-                {% if request.author.username|string() == current_user.username|string() %}
-<<<<<<< HEAD
-	                
+                {% if request.author.username|string() == current_user.username|string() %}     
 	            <a href="{{ url_for('delete_request', request_id=request.id) }}"> <span class="fas fa-trash-alt"></span>
                	</a>
                 <a href="{{ url_for('edit_request', request_id=request.id) }}"> <span class="fas fa-edit"></span>
                 </a>
-=======
-    	            <a href="{{ url_for('delete_request', request_id=request.id) }}"> <i class="fas fa-trash-alt"></i></a>
-                    <a href="{{ url_for('edit_request', request_id=request.id) }}"> <i class="far fa-edit"></i></a>
->>>>>>> b6e5869a76926ccd44239f63dbd57d597f38df5f
                 {% endif %}
 
                 <br/>
