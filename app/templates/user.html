@@ -2,7 +2,8 @@
 
 {% block app_content %}
     <h1>User: {{ user.username }}</h1>
-
+    <a class="btn btn-primary btn-sm" href="{{ url_for('change_email') }}">Change Email</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('change_password') }}">Change Password</a>
     <h3>Your Current Requests</h3>
 	<table class="table table-hover user-list">
         {% for request in requests %}

@@ -6,8 +6,9 @@ from app.models import User, Request
 from werkzeug.urls import url_parse
 from app.email import send_password_reset_email, send_request_email, send_confirmation_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ChangeEmailForm
 from datetime import datetime
+
 
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -332,3 +333,29 @@ def to12HourTime(time):
     #time.strptime(time, "%H:%M:%S")
     return time.strftime("%I:%M %p")
 app.jinja_env.globals.update(to12HourTime=to12HourTime)
+
+
+@app.route('/change_email', methods=['GET', 'POST'])
+@login_required
+def change_email():
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        current_user.email = form.new_email.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('user', username=current_user.username))
+    elif request.method == 'GET':
+        form.new_email.data = current_user.email
+    return render_template('edit_email.html', title='Edit Email',
+                           form=form)
+
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        current_user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been changed.')
+        return redirect(url_for('user', username=current_user.username))
+    return render_template('reset_password.html', form=form)
